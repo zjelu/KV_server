@@ -1,0 +1,42 @@
+Client
+   ↓ TCP
+KVServer
+   ├── listenfd
+   ├── epollfd
+   ├── unordered_map<int, ConnState> conns
+   │
+   ├── handle_accept()
+   ├── handle_read()
+   ├── handle_write()
+   └── check_timeout()
+          │
+          ↓
+      ConnState
+      ├── inbuf
+      ├── outbuf
+      ├── write_offset
+      └── last_active
+          │
+          ↓
+       Parser
+          │
+          ↓
+       Command
+          │
+          ↓
+       Executor
+          │
+          ↓
+       KVStore
+          │
+          ↓
+       Response
+          │
+          ↓
+      ConnState.outbuf
+
+
+而 Executor 只负责：
+看到 SET → 调 store.set()
+看到 GET → 调 store.get()
+然后生成 response
